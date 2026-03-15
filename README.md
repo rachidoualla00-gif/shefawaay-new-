@@ -11,8 +11,8 @@ Shefaaway provides an elegant and spiritual user experience featuring:
 - **المتجر (Store)**: Premium wellness and lifestyle product showcase.
 
 ## 🚀 Live Preview
-**[🔗 Click Here to Preview the Web Version of the App](#)** 
-*(Note: Link will be updated once the repository is pushed and GitHub Pages or Vercel is configured).*
+**[🔗 Click Here to Preview the Web Version of the App](https://rachidoualla00-gif.github.io/shefawaay-new-/)** 
+*(Note: Please allow a few minutes for GitHub to finish processing the link if it is not immediately active).*
 
 ## 🛠️ How to View Locally (No Code Required)
 If you want to view the app on your own mobile device without installing any developer tools:

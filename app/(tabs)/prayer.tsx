@@ -1,17 +1,17 @@
 import { Card } from '@/components/ui/Card';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
-import { Compass, MapPin } from 'lucide-react-native';
+import { Clock, Compass, MapPin } from 'lucide-react-native';
 import React from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ImageBackground, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 const PrayersDay = [
-    { name: 'الفجر', time: '05:15', active: false },
-    { name: 'الشروق', time: '06:45', active: false },
-    { name: 'الظهر', time: '13:30', active: false },
-    { name: 'العصر', time: '16:45', active: false },
-    { name: 'المغرب', time: '18:45', active: true },
-    { name: 'العشاء', time: '20:00', active: false },
+    { name: 'الفجر', time: '05:12', active: false },
+    { name: 'الشروق', time: '06:42', active: false },
+    { name: 'الظهر', time: '13:28', active: false },
+    { name: 'العصر', time: '16:55', active: false },
+    { name: 'المغرب', time: '19:15', active: true },
+    { name: 'العشاء', time: '20:30', active: false },
 ];
 
 export default function PrayerScreen() {
@@ -21,41 +21,58 @@ export default function PrayerScreen() {
     return (
         <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
 
-            <View style={styles.header}>
-                <View style={styles.locationTag}>
-                    <MapPin color={theme.success} size={16} />
-                    <Text style={[styles.locationText, { color: theme.text }]}>الدار البيضاء، المغرب</Text>
-                </View>
-                <Text style={[styles.dateText, { color: theme.textSecondary }]}>14 مارس 2026</Text>
-            </View>
-
-            <Card style={[styles.qiblaCard, { backgroundColor: theme.cardBackground }]}>
-                <View style={[styles.compassCircle, { backgroundColor: theme.border }]}>
-                    <Compass color={theme.success} size={64} style={{ transform: [{ rotate: '45deg' }] }} />
-                </View>
-                <Text style={[styles.qiblaTitle, { color: theme.text }]}>اتجاه القبلة</Text>
-                <Text style={[styles.qiblaSubtitle, { color: theme.textSecondary }]}>قم بتدوير الجهاز لضبط القبلة</Text>
-            </Card>
-
-            <Text style={[styles.sectionTitle, { color: theme.text }]}>مواقيت الصلاة اليوم</Text>
-
-            <View style={styles.prayerList}>
-                {PrayersDay.map((prayer) => (
-                    <View
-                        key={prayer.name}
-                        style={[
-                            styles.prayerRow,
-                            { backgroundColor: prayer.active ? theme.success : theme.cardBackground },
-                            prayer.active && { shadowColor: theme.success, shadowOpacity: 0.3, shadowRadius: 10, elevation: 5 }
-                        ]}
-                    >
-                        <Text style={[styles.prayerName, { color: prayer.active ? Colors.light.cardBackground : theme.text }]}>{prayer.name}</Text>
-                        <Text style={[styles.prayerTime, { color: prayer.active ? Colors.light.cardBackground : theme.text }]}>{prayer.time}</Text>
+            <ImageBackground
+                source={{ uri: 'https://images.unsplash.com/photo-1590075865003-e48277faf551?q=80&w=800&auto=format&fit=crop' }}
+                style={styles.locationBanner}
+                imageStyle={{ borderBottomLeftRadius: 30, borderBottomRightRadius: 30 }}
+            >
+                <View style={styles.bannerOverlay}>
+                    <View style={styles.locationTag}>
+                        <MapPin color="#fff" size={16} />
+                        <Text style={styles.locationText}>الدار البيضاء، المغرب</Text>
                     </View>
-                ))}
+                    <Text style={styles.dateText}>الأحد، 15 مارس 2026</Text>
+                    <Text style={styles.hijriText}>25 رمضان 1447</Text>
+                </View>
+            </ImageBackground>
+
+            <View style={styles.content}>
+                <Card style={styles.qiblaCard}>
+                    <View style={styles.qiblaInfo}>
+                        <Text style={[styles.qiblaTitle, { color: theme.text }]}>بوصلة القبلة</Text>
+                        <Text style={[styles.qiblaSubtitle, { color: theme.textSecondary }]}>مكة المكرمة: 95.4° شرقاً</Text>
+                    </View>
+                    <View style={[styles.compassCircle, { backgroundColor: theme.border }]}>
+                        <Compass color={theme.success} size={40} style={{ transform: [{ rotate: '45deg' }] }} />
+                    </View>
+                </Card>
+
+                <View style={styles.sectionHeader}>
+                    <Text style={[styles.sectionTitle, { color: theme.text }]}>مواقيت الصلاة</Text>
+                    <Clock color={theme.textSecondary} size={20} />
+                </View>
+
+                <View style={styles.prayerList}>
+                    {PrayersDay.map((prayer) => (
+                        <View
+                            key={prayer.name}
+                            style={[
+                                styles.prayerRow,
+                                { backgroundColor: prayer.active ? theme.success : theme.cardBackground },
+                                prayer.active && { shadowColor: theme.success, shadowOpacity: 0.3, shadowRadius: 10, elevation: 8 }
+                            ]}
+                        >
+                            <View style={styles.prayerMain}>
+                                <Text style={[styles.prayerName, { color: prayer.active ? '#fff' : theme.text }]}>{prayer.name}</Text>
+                                {prayer.active && <View style={styles.activeDot} />}
+                            </View>
+                            <Text style={[styles.prayerTime, { color: prayer.active ? '#fff' : theme.text }]}>{prayer.time}</Text>
+                        </View>
+                    ))}
+                </View>
             </View>
 
-            <View style={{ height: 100 }} />
+            <View style={{ height: 120 }} />
         </ScrollView>
     );
 }
@@ -63,72 +80,114 @@ export default function PrayerScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingHorizontal: 16,
     },
-    header: {
-        marginTop: 20,
-        marginBottom: 20,
+    locationBanner: {
+        height: 200,
+        width: '100%',
+    },
+    bannerOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.4)',
+        paddingTop: 40,
         alignItems: 'center',
+        borderBottomLeftRadius: 30,
+        borderBottomRightRadius: 30,
     },
     locationTag: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 5,
-        backgroundColor: 'rgba(0,0,0,0.05)',
+        backgroundColor: 'rgba(255,255,255,0.2)',
         paddingHorizontal: 12,
         paddingVertical: 6,
         borderRadius: 20,
+        marginBottom: 10,
     },
     locationText: {
-        marginLeft: 5,
+        color: '#fff',
+        marginLeft: 6,
         fontSize: 14,
         fontWeight: 'bold',
     },
     dateText: {
-        fontSize: 14,
+        color: '#fff',
+        fontSize: 22,
+        fontWeight: 'bold',
+    },
+    hijriText: {
+        color: 'rgba(255,255,255,0.8)',
+        fontSize: 16,
+        marginTop: 4,
+    },
+    content: {
+        paddingHorizontal: 16,
+        marginTop: -30,
     },
     qiblaCard: {
+        flexDirection: 'row',
         alignItems: 'center',
-        padding: 30,
-        marginBottom: 20,
+        justifyContent: 'space-between',
+        padding: 20,
+        borderRadius: 20,
+        marginBottom: 25,
     },
-    compassCircle: {
-        width: 120,
-        height: 120,
-        borderRadius: 60,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: 15,
+    qiblaInfo: {
+        flex: 1,
     },
     qiblaTitle: {
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: 'bold',
-        marginBottom: 5,
+        marginBottom: 4,
+        textAlign: 'right',
     },
     qiblaSubtitle: {
-        fontSize: 14,
+        fontSize: 13,
+        textAlign: 'right',
+    },
+    compassCircle: {
+        width: 70,
+        height: 70,
+        borderRadius: 35,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginLeft: 15,
+    },
+    sectionHeader: {
+        flexDirection: 'row-reverse',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: 15,
     },
     sectionTitle: {
         fontSize: 20,
         fontWeight: 'bold',
-        marginBottom: 15,
     },
     prayerList: {
         width: '100%',
     },
     prayerRow: {
-        flexDirection: 'row',
+        flexDirection: 'row-reverse',
         justifyContent: 'space-between',
-        padding: 18,
-        borderRadius: 12,
-        marginBottom: 10,
+        padding: 20,
+        borderRadius: 16,
+        marginBottom: 12,
+    },
+    prayerMain: {
+        flexDirection: 'row-reverse',
+        alignItems: 'center',
     },
     prayerName: {
         fontSize: 18,
         fontWeight: 'bold',
     },
+    activeDot: {
+        width: 6,
+        height: 6,
+        borderRadius: 3,
+        backgroundColor: '#fff',
+        marginRight: 10,
+    },
     prayerTime: {
         fontSize: 18,
-        fontWeight: '600',
+        fontWeight: 'bold',
     },
 });

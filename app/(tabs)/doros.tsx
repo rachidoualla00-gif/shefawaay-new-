@@ -1,9 +1,9 @@
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
 import { DorosData } from '@/data/mockData';
-import { Play } from 'lucide-react-native';
+import { PlayCircle } from 'lucide-react-native';
 import React from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function DorosScreen() {
     const colorScheme = useColorScheme();
@@ -11,20 +11,33 @@ export default function DorosScreen() {
 
     return (
         <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
-            <Text style={[styles.headerTitle, { color: theme.text }]}>أحدث الدروس</Text>
+            <Text style={[styles.headerTitle, { color: theme.text }]}>الدروس والمحاضرات</Text>
 
             {DorosData.map((dars) => (
                 <TouchableOpacity key={dars.id} style={[styles.card, { backgroundColor: theme.cardBackground, shadowColor: theme.border }]}>
-                    <View style={[styles.thumbnail, { backgroundColor: theme.border }]}>
-                        <Play color={Colors.light.success} size={40} opacity={0.8} />
-                    </View>
-                    <View style={styles.content}>
-                        <View style={styles.badge}>
-                            <Text style={styles.badgeText}>{dars.category}</Text>
+                    <ImageBackground
+                        source={{ uri: dars.image }}
+                        style={styles.thumbnail}
+                        imageStyle={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
+                    >
+                        <View style={styles.thumbnailOverlay}>
+                            <PlayCircle color="#FFFFFF" size={32} opacity={0.9} />
+                            <View style={styles.durationBadge}>
+                                <Text style={styles.durationText}>{dars.duration}</Text>
+                            </View>
                         </View>
-                        <Text style={[styles.title, { color: theme.text }]} numberOfLines={2}>{dars.title}</Text>
-                        <Text style={[styles.imam, { color: theme.textSecondary }]}>{dars.imam}</Text>
-                        <Text style={[styles.duration, { color: theme.textSecondary }]}>{dars.duration}</Text>
+                    </ImageBackground>
+
+                    <View style={styles.content}>
+                        <View style={styles.contentTop}>
+                            <View style={styles.badge}>
+                                <Text style={styles.badgeText}>{dars.category}</Text>
+                            </View>
+                            <Text style={[styles.title, { color: theme.text }]} numberOfLines={2}>{dars.title}</Text>
+                        </View>
+                        <View style={styles.contentBottom}>
+                            <Text style={[styles.imam, { color: theme.textSecondary }]} numberOfLines={1}>{dars.imam}</Text>
+                        </View>
                     </View>
                 </TouchableOpacity>
             ))}
@@ -54,17 +67,44 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 5,
         elevation: 3,
+        height: 120, // fixed height for uniform look
     },
     thumbnail: {
-        width: 120,
-        height: 120,
-        alignItems: 'center',
+        width: 130,
+        height: '100%',
         justifyContent: 'center',
+        alignItems: 'center',
+    },
+    thumbnailOverlay: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(0,0,0,0.35)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    durationBadge: {
+        position: 'absolute',
+        bottom: 8,
+        right: 8,
+        backgroundColor: 'rgba(0,0,0,0.7)',
+        paddingHorizontal: 6,
+        paddingVertical: 2,
+        borderRadius: 4,
+    },
+    durationText: {
+        color: '#fff',
+        fontSize: 10,
+        fontWeight: 'bold',
     },
     content: {
         flex: 1,
         padding: 12,
         justifyContent: 'space-between',
+    },
+    contentTop: {
+        flex: 1,
+    },
+    contentBottom: {
+        marginTop: 5,
     },
     badge: {
         backgroundColor: '#EBEBEB',
@@ -72,23 +112,20 @@ const styles = StyleSheet.create({
         paddingHorizontal: 8,
         paddingVertical: 3,
         borderRadius: 12,
-        marginBottom: 5,
+        marginBottom: 6,
     },
     badgeText: {
         fontSize: 10,
-        color: '#555',
+        color: '#333',
         fontWeight: 'bold',
     },
     title: {
-        fontSize: 16,
+        fontSize: 15,
         fontWeight: 'bold',
-        marginBottom: 4,
+        lineHeight: 22,
     },
     imam: {
-        fontSize: 14,
-        marginBottom: 4,
-    },
-    duration: {
         fontSize: 12,
+        fontWeight: '600',
     },
 });

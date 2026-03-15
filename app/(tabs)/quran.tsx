@@ -1,9 +1,9 @@
 import { Card } from '@/components/ui/Card';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
-import { Bookmark, PlayCircle } from 'lucide-react-native';
+import { BookOpen, Bookmark, PlayCircle } from 'lucide-react-native';
 import React from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const Surahs = [
     { id: 1, name: 'الفاتحة', pages: '1', type: 'مكية' },
@@ -11,8 +11,12 @@ const Surahs = [
     { id: 3, name: 'آل عمران', pages: '50-76', type: 'مدنية' },
     { id: 4, name: 'النساء', pages: '77-106', type: 'مدنية' },
     { id: 18, name: 'الكهف', pages: '293-304', type: 'مكية' },
+    { id: 19, name: 'مريم', pages: '305-312', type: 'مكية' },
+    { id: 20, name: 'طه', pages: '313-321', type: 'مكية' },
     { id: 36, name: 'يس', pages: '440-445', type: 'مكية' },
     { id: 55, name: 'الرحمن', pages: '531-534', type: 'مدنية' },
+    { id: 56, name: 'الواقعة', pages: '534-537', type: 'مكية' },
+    { id: 67, name: 'الملك', pages: '562-564', type: 'مكية' },
 ];
 
 export default function QuranScreen() {
@@ -22,35 +26,57 @@ export default function QuranScreen() {
     return (
         <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
 
-            <Card style={[styles.resumeCard, { backgroundColor: theme.tint }]}>
-                <View style={styles.resumeInfo}>
-                    <Text style={styles.resumeLabel}>الاستكمال من حيث توقفت</Text>
-                    <Text style={styles.resumeSurah}>سورة الكهف - صفحة 295</Text>
-                </View>
-                <TouchableOpacity style={[styles.playBtn, { backgroundColor: theme.cardBackground }]}>
-                    <PlayCircle color={theme.success} size={24} />
-                    <Text style={[styles.playText, { color: theme.success }]}>متابعة القراءة</Text>
-                </TouchableOpacity>
-            </Card>
-
-            <Text style={[styles.sectionTitle, { color: theme.text }]}>الفهرس</Text>
-
-            {Surahs.map((surah) => (
-                <Card key={surah.id} style={styles.surahRow}>
-                    <View style={styles.surahNumberCircle}>
-                        <Text style={[styles.surahNumber, { color: theme.textSecondary }]}>{surah.id}</Text>
+            <ImageBackground
+                source={{ uri: 'https://images.unsplash.com/photo-1609599006353-e629aaabfeae?q=80&w=800&auto=format&fit=crop' }}
+                style={styles.resumeCardContainer}
+                imageStyle={{ borderRadius: 20 }}
+            >
+                <View style={styles.resumeOverlay}>
+                    <View style={styles.resumeInfo}>
+                        <View style={styles.resumeLabelRow}>
+                            <BookOpen color="#fff" size={16} />
+                            <Text style={styles.resumeLabel}>آخر قراءة</Text>
+                        </View>
+                        <Text style={styles.resumeSurah}>سورة الكهف</Text>
+                        <Text style={styles.resumePage}>صفحة رقم 295</Text>
                     </View>
-                    <View style={styles.surahDetails}>
-                        <Text style={[styles.surahName, { color: theme.text }]}>سورة {surah.name}</Text>
-                        <Text style={[styles.surahMeta, { color: theme.textSecondary }]}>{surah.type} • ص {surah.pages}</Text>
-                    </View>
-                    <TouchableOpacity style={styles.bookmarkBtn}>
-                        <Bookmark color={theme.textSecondary} size={24} />
+                    <TouchableOpacity style={[styles.playBtn, { backgroundColor: '#fff' }]}>
+                        <PlayCircle color={theme.success} size={20} />
+                        <Text style={[styles.playText, { color: theme.success }]}>استكمال</Text>
                     </TouchableOpacity>
-                </Card>
-            ))}
+                </View>
+            </ImageBackground>
 
-            <View style={{ height: 100 }} />
+            <View style={styles.searchBar}>
+                <Text style={[styles.sectionTitle, { color: theme.text }]}>فهرس السور</Text>
+            </View>
+
+            <View style={styles.surahList}>
+                {Surahs.map((surah) => (
+                    <TouchableOpacity key={surah.id} activeOpacity={0.7}>
+                        <Card style={styles.surahRow}>
+                            <View style={styles.surahNumberCircle}>
+                                <ImageBackground
+                                    source={{ uri: 'https://cdn-icons-png.flaticon.com/512/3133/3133160.png' }}
+                                    style={styles.numberBg}
+                                    imageStyle={{ opacity: 0.1 }}
+                                >
+                                    <Text style={[styles.surahNumber, { color: theme.textSecondary }]}>{surah.id}</Text>
+                                </ImageBackground>
+                            </View>
+                            <View style={styles.surahDetails}>
+                                <Text style={[styles.surahName, { color: theme.text }]}>سورة {surah.name}</Text>
+                                <Text style={[styles.surahMeta, { color: theme.textSecondary }]}>{surah.type} • {surah.pages} صفحة</Text>
+                            </View>
+                            <View style={styles.bookmarkBtn}>
+                                <Bookmark color={theme.textSecondary} size={22} />
+                            </View>
+                        </Card>
+                    </TouchableOpacity>
+                ))}
+            </View>
+
+            <View style={{ height: 120 }} />
         </ScrollView>
     );
 }
@@ -61,73 +87,114 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         paddingTop: 10,
     },
-    resumeCard: {
-        padding: 24,
+    resumeCardContainer: {
+        height: 160,
+        marginBottom: 25,
         borderRadius: 20,
-        marginBottom: 20,
+        overflow: 'hidden',
+    },
+    resumeOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(21, 45, 33, 0.75)',
+        padding: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
     },
     resumeInfo: {
-        marginBottom: 20,
+        flex: 1,
+    },
+    resumeLabelRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 5,
     },
     resumeLabel: {
-        color: 'rgba(255,255,255,0.8)',
-        fontSize: 14,
-        marginBottom: 5,
+        color: 'rgba(255,255,255,0.9)',
+        fontSize: 13,
+        marginLeft: 6,
+        fontWeight: '600',
     },
     resumeSurah: {
         color: '#fff',
-        fontSize: 22,
+        fontSize: 24,
         fontWeight: 'bold',
+    },
+    resumePage: {
+        color: 'rgba(255,255,255,0.7)',
+        fontSize: 14,
+        marginTop: 2,
     },
     playBtn: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
-        padding: 12,
-        borderRadius: 30,
-        width: 160,
+        paddingHorizontal: 15,
+        paddingVertical: 10,
+        borderRadius: 25,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+        elevation: 3,
     },
     playText: {
-        marginLeft: 8,
+        marginLeft: 6,
         fontWeight: 'bold',
         fontSize: 14,
     },
+    searchBar: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 15,
+    },
     sectionTitle: {
-        fontSize: 20,
+        fontSize: 22,
         fontWeight: 'bold',
-        marginBottom: 10,
+        textAlign: 'right',
+    },
+    surahList: {
+        width: '100%',
     },
     surahRow: {
-        flexDirection: 'row',
+        flexDirection: 'row-reverse', // Arabic alignment
         alignItems: 'center',
         padding: 16,
-        marginBottom: 10,
+        marginBottom: 12,
+        borderRadius: 16,
     },
     surahNumberCircle: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        backgroundColor: 'rgba(0,0,0,0.05)',
+        width: 45,
+        height: 45,
+        borderRadius: 12,
+        backgroundColor: 'rgba(0,0,0,0.03)',
+        overflow: 'hidden',
+    },
+    numberBg: {
+        flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        marginRight: 15,
     },
     surahNumber: {
-        fontSize: 16,
+        fontSize: 15,
         fontWeight: 'bold',
     },
     surahDetails: {
         flex: 1,
+        marginRight: 15,
     },
     surahName: {
         fontSize: 18,
         fontWeight: 'bold',
-        marginBottom: 4,
+        marginBottom: 2,
+        textAlign: 'right',
     },
     surahMeta: {
-        fontSize: 13,
+        fontSize: 12,
+        textAlign: 'right',
+        opacity: 0.8,
     },
     bookmarkBtn: {
-        padding: 10,
+        padding: 5,
     },
 });

@@ -1,10 +1,17 @@
 import { Card } from '@/components/ui/Card';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
-import { DailyDua, DailyHadith } from '@/data/mockData';
-import { Bell } from 'lucide-react-native';
+import { DailyDua, DailyHadith, HomeCategories } from '@/data/mockData';
+import { Bell, Book, BookOpen, Compass, ShoppingBag } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+
+const IconMap: any = {
+  BookOpen: BookOpen,
+  Book: Book,
+  Compass: Compass,
+  ShoppingBag: ShoppingBag,
+};
 
 export default function HomeScreen() {
   const colorScheme = useColorScheme();
@@ -22,19 +29,42 @@ export default function HomeScreen() {
     <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={styles.header}>
         <Text style={[styles.dateText, { color: theme.textSecondary }]}>
-          14 مارس 2026 • 24 رمضان 1447
+          15 مارس 2026 • 25 رمضان 1447
         </Text>
       </View>
 
-      <Card style={[styles.heroCard, { backgroundColor: theme.success }]}>
-        <View style={styles.heroHeader}>
-          <Text style={styles.prayerTitle}>الصلاة القادمة</Text>
-          <Bell color={Colors.light.cardBackground} size={20} />
+      <ImageBackground
+        source={{ uri: 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=800&auto=format&fit=crop' }}
+        style={styles.heroContainer}
+        imageStyle={{ borderRadius: 24 }}
+      >
+        <View style={[styles.heroOverlay, { backgroundColor: 'rgba(21, 45, 33, 0.7)' }]}>
+          <View style={styles.heroHeader}>
+            <Text style={styles.prayerTitle}>الصلاة القادمة</Text>
+            <Bell color="#fff" size={20} />
+          </View>
+          <Text style={styles.prayerName}>الفجر</Text>
+          <Text style={styles.prayerTime}>05:12</Text>
+          <View style={styles.countdownContainer}>
+            <Text style={styles.countdown}>باقي 03:45:10</Text>
+          </View>
         </View>
-        <Text style={styles.prayerName}>المغرب</Text>
-        <Text style={styles.prayerTime}>18:45</Text>
-        <Text style={styles.countdown}>باقي 01:23:10</Text>
-      </Card>
+      </ImageBackground>
+
+      <Text style={[styles.sectionTitle, { color: theme.text }]}>وصول سريع</Text>
+      <View style={styles.categoriesGrid}>
+        {HomeCategories.map((cat) => {
+          const Icon = IconMap[cat.icon];
+          return (
+            <TouchableOpacity key={cat.id} style={styles.categoryItem}>
+              <View style={[styles.iconCircle, { backgroundColor: theme.cardBackground }]}>
+                <Icon color={theme.success} size={28} />
+              </View>
+              <Text style={[styles.categoryLabel, { color: theme.text }]}>{cat.title}</Text>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
 
       <Text style={[styles.sectionTitle, { color: theme.text }]}>حديث اليوم</Text>
       <Card style={styles.contentCard}>
@@ -48,7 +78,7 @@ export default function HomeScreen() {
         <Text style={[styles.sourceText, { color: theme.textSecondary, textAlign: 'center' }]}>- {DailyDua.source}</Text>
       </Card>
 
-      <View style={{ height: 100 }} />
+      <View style={{ height: 120 }} />
     </ScrollView>
   );
 }
@@ -65,63 +95,105 @@ const styles = StyleSheet.create({
   },
   dateText: {
     fontSize: 16,
+    fontWeight: '600',
   },
-  heroCard: {
-    padding: 30,
-    borderRadius: 24,
-    alignItems: 'center',
+  heroContainer: {
+    height: 220,
     marginBottom: 20,
+    overflow: 'hidden',
+    borderRadius: 24,
+  },
+  heroOverlay: {
+    flex: 1,
+    padding: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 24,
   },
   heroHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
-    marginBottom: 10,
+    position: 'absolute',
+    top: 20,
+    paddingHorizontal: 25,
   },
   prayerTitle: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 16,
     opacity: 0.9,
+    fontWeight: '600',
   },
   prayerName: {
     color: '#fff',
-    fontSize: 48,
+    fontSize: 42,
     fontWeight: 'bold',
-    marginBottom: 5,
+    marginBottom: 4,
   },
   prayerTime: {
     color: '#fff',
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: '600',
-    marginBottom: 10,
+    marginBottom: 15,
+  },
+  countdownContainer: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    borderRadius: 20,
   },
   countdown: {
     color: '#fff',
-    fontSize: 14,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-    overflow: 'hidden',
+    fontSize: 13,
+    fontWeight: 'bold',
   },
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 15,
     marginTop: 10,
-    textAlign: 'left',
+    textAlign: 'right',
+  },
+  categoriesGrid: {
+    flexDirection: 'row-reverse',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  categoryItem: {
+    alignItems: 'center',
+    width: '23%',
+  },
+  iconCircle: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
+    elevation: 2,
+  },
+  categoryLabel: {
+    fontSize: 12,
+    fontWeight: '600',
   },
   contentCard: {
-    padding: 20,
+    padding: 24,
+    borderRadius: 20,
+    marginBottom: 15,
   },
   contentText: {
     fontSize: 16,
     lineHeight: 28,
-    marginBottom: 10,
+    marginBottom: 12,
     textAlign: 'justify',
   },
   sourceText: {
-    fontSize: 14,
-    textAlign: 'right',
+    fontSize: 13,
+    textAlign: 'left',
+    opacity: 0.7,
   },
 });
